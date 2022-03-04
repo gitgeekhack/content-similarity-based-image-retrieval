@@ -2,7 +2,7 @@
 from Helper_programmes.Obj_detector import ObjDetection
 from Helper_programmes.Database.img_store import store_to_db
 
-imgpath = "/home/mtech/Downloads/input5.jpeg"
+imgpath = "/home/mtech/Downloads/input2.png"
 
 # object detection
 obj = ObjDetection()
