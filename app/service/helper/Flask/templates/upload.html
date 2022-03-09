@@ -1,0 +1,19 @@
+<!doctype html>
+<title>Upload Images</title>
+<h2>Select multiple images to upload and display</h2>
+<p>
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<ul class=flashes>
+		{% for message in messages %}
+		  <li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
+</p>
+
+<form method="post" action="/upload" enctype="multipart/form-data">
+	<input type="file" name="files[]" multiple="true" autocomplete="off" required>
+	<input type="submit" value="Upload">
+</form>
