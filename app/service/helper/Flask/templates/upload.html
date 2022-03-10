@@ -1,19 +1,31 @@
-<!doctype html>
-<title>Upload Images</title>
-<h2>Select multiple images to upload and display</h2>
-<p>
-	{% with messages = get_flashed_messages() %}
-	  {% if messages %}
-		<ul class=flashes>
-		{% for message in messages %}
-		  <li>{{ message }}</li>
-		{% endfor %}
-		</ul>
-	  {% endif %}
-	{% endwith %}
-</p>
+{% extends 'base.html' %}
+{% block title %}
+    <title>Upload images</title>
+{% endblock %}
 
-<form method="post" action="/upload" enctype="multipart/form-data">
-	<input type="file" name="files[]" multiple="true" autocomplete="off" required>
-	<input type="submit" value="Upload">
-</form>
+{% block h1 %}
+    <h1 class="display-5">Select Images to Upload</h1>
+{% endblock %}
+
+{% block data %}
+	<a href="{{ url_for('homepage') }}"><button class="btn btn-outline-primary btn-sm">Click to go home</button></a>
+	<br><br>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+             {% if messages %}
+                   {% for category, message in messages %}
+                        {% if category=='error' %}
+                            <p class="alert alert-danger">{{ message }}</p>
+                        {% endif %}
+                        {% if category=='info' %}
+                            <p class="alert alert-success">{{ message }}</p>
+                        {% endif %}
+                   {% endfor %}
+             {% endif %}
+    {% endwith %}
+
+
+    <form method="post" action="/upload" enctype="multipart/form-data">
+        <input type="file" name="files[]" multiple="true" autocomplete="off" required>
+        <button type="submit" class="btn btn-outline-success">Upload</button>
+    </form>
+{% endblock %}

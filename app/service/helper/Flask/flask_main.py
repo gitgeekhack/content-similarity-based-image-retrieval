@@ -49,9 +49,9 @@ def upload_image():
             detected_objects = detect_objects(image_path)
             store_objects(image_path, detected_objects)
         else:
-            flash('Allowed file types are -> png, jpg, jpeg')
+            flash('Allowed file types are : png, jpg, jpeg', 'error')
             return redirect(request.url)
-    flash('Done!!!')
+    flash('Done!!!', 'info')
     # print(file_names)
     return render_template('upload.html', filenames=file_names)
 
@@ -59,18 +59,19 @@ def upload_image():
 @app.route('/search', methods=["POST", "GET"])
 def search_image():
     file = request.files.get('input_image')
-    image_names = None
+    image_names = []
     if file:
-        filename = secure_filename(file.filename)
-        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(image_path)
-        detected_objects = detect_objects(image_path)
-        images_with_keys = multiple_key_retrieve(detected_objects)
-        image_names = []
-        for i in images_with_keys:
-            image_names.append(i.split('/')[-1])
-        # print(image_names)
-
+        if allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(image_path)
+            detected_objects = detect_objects(image_path)
+            images_with_keys = multiple_key_retrieve(detected_objects)
+            for i in images_with_keys:
+                image_names.append(i.split('/')[-1])
+        else:
+            flash('Allowed file types are : png, jpg, jpeg', 'error')
+            return redirect(request.url)
     return render_template('search.html', image_names=image_names)
 
 

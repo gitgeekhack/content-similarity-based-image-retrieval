@@ -1,13 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Home page</title>
-</head>
-<body>
-    <center><h2>Content Based Image Retrieval</h2></center>
-    <center><h5>Here you can search images based on content of input image</h5></center>
-    <center><form action="/upload" method="post"><button type="submit">Upload Images</button></form>
-        <form action="/search" method="get"><button type="submit">Search Images</button></form></center>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}
+    <title>Home Page</title>
+{% endblock %}
+
+{% block h1 %}
+    <center><h1 class="display-5">Content Based Image Retrieval</h1></center>
+{% endblock %}
+
+
+{% block data %}
+    <center><h3>Here you can search images based on content of input image</h3></center>
+    <br>
+    <center>
+        <div class="d-grid gap-5 d-md-block">
+            <a class="btn btn-outline-dark" href="/upload" role="button" methods="post">Upload</a>
+            <a class="btn btn-outline-dark" href="/search" role="button" methods="get">Search</a>
+        </div>
+    </center>
+{% endblock %}

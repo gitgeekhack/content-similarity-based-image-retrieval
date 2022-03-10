@@ -1,33 +1,24 @@
 # Environment Configuration
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
-class Config(object):
-    ENV = 'development'
-
-
-class ProductionConfig(Config):
-    ENV = 'production'
-
-
-class DevelopmentConfig(Config):
-    ENV = 'development'
+# Environment Configuration
+class Environment(object):
+    if os.environ['ENVIRONMENT'] == 'development':
+        ENV = 'development'
+    else:
+        ENV = 'production'
 
 
 # Database Configuration
 class Database(object):
-    HOST = None
-    USERNAME = None
-    PASSWORD = None
-
-
-class LocalDatabase(Database):
-    HOST = "https://localhost:9200"
-    USERNAME = "elastic"
-    PASSWORD = "eNCL=VuBQL7UV6QpJxWe"
-
-
-class RemoteDatabase(Database):
-    HOST = "set remote address here"
-    USERNAME = "username"
-    PASSWORD = "password"
+    if os.environ['DATABASE'] == 'local':
+        HOST = "https://localhost:9200"
+        USERNAME = "elastic"
+        PASSWORD = "eNCL=VuBQL7UV6QpJxWe"
+    else:
+        HOST = "set remote address here"
+        USERNAME = "username"
+        PASSWORD = "password"
