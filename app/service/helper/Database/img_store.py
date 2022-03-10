@@ -1,13 +1,12 @@
 # Filtering Warnings
-import os
 import warnings
 warnings.filterwarnings('ignore')
 
+# importing required configurations
 from app.manage import create_database_connection
-# importing Elasticsearch
-from elasticsearch import Elasticsearch
 
-es = create_database_connection()
+es = create_database_connection() # creating connection with elasticsearch database
+
 # create index if not exists
 try:
     es.indices.create(index="images")

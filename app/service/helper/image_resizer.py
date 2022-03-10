@@ -1,3 +1,4 @@
+# importing libraries
 import cv2
 
 # Function for resizing image

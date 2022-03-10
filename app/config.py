@@ -1,7 +1,7 @@
-# Environment Configuration
+# importing required libraries
 import os
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv()  # function to load environment variables
 
 
 # Environment Configuration

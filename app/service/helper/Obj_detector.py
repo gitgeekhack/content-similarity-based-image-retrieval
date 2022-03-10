@@ -1,4 +1,7 @@
+# importing libraries
+import cv2
 import os
+
 # Importing function to resize images
 from app.service.helper.image_resizer import image_resize
 
@@ -6,13 +9,13 @@ from app.service.helper.image_resizer import image_resize
 import warnings
 warnings.filterwarnings('ignore')
 
+# finding path of application's root folder
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 APP_ROOT = APP_ROOT[:-15]
 
 from detectron2.utils.logger import setup_logger
 setup_logger()
 setup_logger(name="mask2former")
-import cv2
 
 # importing some common detectron2 utilities
 from detectron2.engine import DefaultPredictor

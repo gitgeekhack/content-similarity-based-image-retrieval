@@ -1,9 +1,8 @@
 # importing required libraries
-from elasticsearch import Elasticsearch
 import json
 from app.manage import create_database_connection
 
-es = create_database_connection()
+es = create_database_connection() # creating connection with elasticsearch database
 
 # function for retrieving images by search keyword
 def single_key_retrieve(searchkey):
@@ -47,5 +46,3 @@ def multiple_key_retrieve(keys):
         images_with_searchkeys.append(i['_source']['imgpath'])
 
     return images_with_searchkeys
-
-# es.close() # closing database connection

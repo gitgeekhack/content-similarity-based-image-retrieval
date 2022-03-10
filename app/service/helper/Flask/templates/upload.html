@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block data %}
-	<a href="{{ url_for('homepage') }}"><button class="btn btn-outline-primary btn-sm">Click to go home</button></a>
+	<a href="{{ url_for('homepage') }}"><button class="btn btn-outline-primary btn-sm"> ← Click to go home</button></a>
 	<br><br>
 	{% with messages = get_flashed_messages(with_categories=true) %}
              {% if messages %}

@@ -2,8 +2,6 @@
 from app.service.helper.Obj_detector import ObjDetection
 from app.service.helper.Database.img_store import store_to_db
 
-# imgpath = "/home/mtech/Downloads/input3.jpg"
-
 
 # object detection
 def detect_objects(imgpath):
@@ -12,5 +10,6 @@ def detect_objects(imgpath):
     return objects_detected
 
 
+# storing to database
 def store_objects(imgpath, objects_detected):
     store_to_db(imgpath, objects_detected)  # Storing into database

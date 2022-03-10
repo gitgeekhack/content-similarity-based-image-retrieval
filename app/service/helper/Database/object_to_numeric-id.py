@@ -2,11 +2,10 @@
 # import warnings
 # warnings.filterwarnings('ignore')
 
-# # importing Elasticsearch
-# from elasticsearch import Elasticsearch
+# # importing required configurations
 # from app.manage import create_database_connection
 
-# es = create_database_connection()
+# es = create_database_connection() # creating connection with elasticsearch database
 
 # es.indices.create(index="object_id_mapping") # creating index
 #
