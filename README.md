@@ -15,8 +15,7 @@
     https://dl.fbaipublicfiles.com/detectron2/wheels/cpu/torch1.10/index.html
   
 
-**Additional libraries**
-(See 'additional_libraries' folder in project root) :-
+**Additional libraries** :-
 * libcudart.so.11.0
 * libcudart.so.11.0.221
 * libc10_cuda.so
