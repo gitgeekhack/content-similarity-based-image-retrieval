@@ -23,7 +23,7 @@ from detectron2.projects.deeplab import add_deeplab_config
 coco_metadata = MetadataCatalog.get("coco_2017_val_panoptic")
 
 # Configurations to use pre-trained model
-from app.data.Model.Mask2Former.mask2former import add_maskformer2_config
+from app.service.mask2former import add_maskformer2_config
 cfg = get_cfg()
 add_deeplab_config(cfg)
 add_maskformer2_config(cfg)
