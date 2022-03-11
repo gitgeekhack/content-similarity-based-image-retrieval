@@ -5,19 +5,18 @@
 {% endblock %}
 
 {% block additional_script %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
     <style>
-          .gallery {
-            padding: 40px;
-          }
+        .gallery {
+        padding: 40px;
+        }
 
-          .gallery img {
-            width: 100%;
-            border-radius: 0;
-            position: relative;
-          }
-        </style>
+        .gallery img {
+        width: 100%;
+        border-radius: 0;
+        position: relative;
+        }
+    </style>
 {% endblock %}
 
 {% block h1 %}
@@ -28,22 +27,23 @@
     <a href="{{ url_for('main_app.homepage') }}"><button class="btn btn-outline-primary btn-sm"> ← Click to go home</button></a>
 	<br><br>
     {% with messages = get_flashed_messages() %}
-             {% if messages %}
-                   {% for message in messages %}
-                        <p class="alert alert-warning">{{ message }}</p>
-                   {% endfor %}
-             {% endif %}
+        {% if messages %}
+            {% for message in messages %}
+                <p class="alert alert-warning">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
     {% endwith %}
+
     <form method="post" action="/search" enctype="multipart/form-data">
         <input type="file" name="input_image" autocomplete="off" required>
         <button type="submit" class="btn btn-outline-success">Search</button>
     </form>
 
-{% if image_names %}
-<div class="container-fluid">
-    <div class="row gallery">
-        <br><h3>Retrieved Images</h3>
-        {% for image in image_names %}
+    {% if image_names %}
+        <div class="container-fluid">
+            <div class="row gallery">
+                <br><p class="display-6">Retrieved Images</p>
+                {% for image in image_names %}
                     <div class="col-sm-6 col-md-4 col-lg-3">
                         <a href="{{ url_for('main_app.send_image', filename=image) }}">
                           <img class="img-fluid"src="{{ url_for('main_app.send_image', filename=image) }}" style="padding:7px">
