@@ -21,6 +21,8 @@ def create_app(debug=False):
     config = read_properties_file(os.path.join(APP_ROOT, "environment.properties"))
     config_name = os.getenv('FLASK_CONFIGURATION', config['environment'])
     app.config.from_object(CONFIG[config_name])
+
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # create if folder not exists
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # setting upload folder of application
 
     es = db_obj.connect()  # connecting to database
