@@ -4,15 +4,10 @@ warnings.filterwarnings('ignore')
 
 # importing libraries
 import cv2
-import os
 
 # Importing function to resize images
 from app.service.helper.image_resizer import image_resize
-
-
-# finding path of application's root folder
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-APP_ROOT = APP_ROOT[:-15]
+from app.constant import APP_ROOT
 
 
 # importing some common detectron2 utilities
@@ -52,10 +47,9 @@ def predict(image_path):
     img_resized = image_resize(img)  # resizing image
     outputs = predictor(img_resized)  # using predictor object of model
 
-    detected = []  # it will contain objects detected in image
+    detected = set()  # it will contain objects detected in image
     for i in outputs["panoptic_seg"][1]:
         obj = coco_metadata.stuff_classes[i['category_id']]
-        if obj not in detected:
-            detected.append(obj)
+        detected.add(obj)
 
-    return detected
+    return list(detected)

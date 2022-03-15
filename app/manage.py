@@ -1,43 +1,37 @@
 # importing required libraries
 import os
-from elasticsearch import Elasticsearch
 from flask import Flask
 
 # importing helper programmes
 from app.common.utils import setup_logger, read_properties_file
-from app.config import CONFIG, LocalDatabaseConfig, RemoteDatabaseConfig
+from app.config import CONFIG
+from app.constant import UPLOAD_FOLDER, SECRET_KEY, APP_ROOT
+from app.database.db_connection_manager import DatabaseConnection
+from app.database.object_to_id_mapping import create_numeric_id_mapping
+
+# object for database activities
+db_obj = DatabaseConnection()
 
 
 # function for creating flask app
 def create_app(debug=False):
-    app = Flask(__name__, template_folder="./templates")
+    app = Flask(__name__, template_folder="./templates", static_folder="./static")
     app.debug = debug
-    app.secret_key = "wljsdlflsdkflskd"
-    parent_dir = os.path.dirname(os.path.abspath(__file__))  # finding parent directory of file
-    config = read_properties_file(os.path.join(parent_dir, "environment.properties"))
+    app.secret_key = SECRET_KEY
+    config = read_properties_file(os.path.join(APP_ROOT, "environment.properties"))
     config_name = os.getenv('FLASK_CONFIGURATION', config['environment'])
     app.config.from_object(CONFIG[config_name])
-
-    UPLOAD_FOLDER = parent_dir + '/data/Uploaded_images'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # setting upload folder of application
+
+    es = db_obj.connect()  # connecting to database
+    # create index if not exists
+    try:
+        es.indices.create(index="images")
+        create_numeric_id_mapping()  # creating mapping of object names to numeric id
+    except:
+        pass
+    db_obj.close(es)  # closing database connection
+
     logger = setup_logger()
     app.logger.info('Starting [{}] server'.format(app.config['ENVIRONMENT']))
     return app, logger
-
-
-# function for connecting to elasticsearch database
-def create_database_connection():
-    parent_dir = os.path.dirname(os.path.abspath(__file__))
-    config = read_properties_file(os.path.join(parent_dir, "environment.properties"))
-    config_name = os.getenv('DATABASE_CONFIGURATION', config['database'])
-
-    # checking if database is local or remote
-    if config_name == 'LocalDatabase':
-        es = Elasticsearch(LocalDatabaseConfig.HOST,
-                           basic_auth=(LocalDatabaseConfig.USERNAME, LocalDatabaseConfig.PASSWORD),
-                           verify_certs=False)  # connecting to database using username and password
-    else:
-        es = Elasticsearch(RemoteDatabaseConfig.HOST,
-                           basic_auth=(RemoteDatabaseConfig.USERNAME, RemoteDatabaseConfig.PASSWORD),
-                           verify_certs=False)
-    return es

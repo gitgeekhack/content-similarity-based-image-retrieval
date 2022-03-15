@@ -26,17 +26,26 @@
 {% block data %}
     <a href="{{ url_for('main_app.homepage') }}"><button class="btn btn-outline-primary btn-sm"> ← Click to go home</button></a>
 	<br><br>
-    {% with messages = get_flashed_messages() %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            {% for message in messages %}
-                <p class="alert alert-warning">{{ message }}</p>
+            {% for category, message in messages %}
+                {% if category=='error' %}
+                    <p class="alert alert-danger">{{ message }}</p>
+                {% endif %}
+                {% if category=='info' %}
+                    <p class="alert alert-success">{{ message }}</p>
+                {% endif %}
+                {% if category=='warning' %}
+                    <p class="alert alert-warning">{{ message }}</p>
+                {% endif %}
             {% endfor %}
         {% endif %}
     {% endwith %}
 
     <form method="post" action="/search" enctype="multipart/form-data">
         <input type="file" name="input_image" autocomplete="off" required>
-        <button type="submit" class="btn btn-outline-success">Search</button>
+        <button type="submit" class="btn btn-outline-success" onclick="func()">Search</button>
     </form>
 
     {% if image_names %}
@@ -53,7 +62,6 @@
             </div>
         </div>
     {% endif %}
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
     <script>

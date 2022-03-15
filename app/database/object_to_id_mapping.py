@@ -3,30 +3,21 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # importing required configurations
-from app.manage import create_database_connection
+from .db_connection_manager import DatabaseConnection
+from app.constant import PANOPTIC_CLASSES
+
+# object for database activities
+db_obj = DatabaseConnection()
 
 
 # function for mapping string object names to numeric id
 def create_numeric_id_mapping():
-    es = create_database_connection()  # creating connection with elasticsearch database
-
+    es = db_obj.connect()  # # connecting to database
     es.indices.create(index="object_id_mapping")  # creating index
 
-    # object categories available for panoptic segmentation
-    classes = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',
-               'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow',
-               'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee',
-               'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard',
-               'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple',
-               'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch',
-               'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard',
-               'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase',
-               'scissors', 'teddy bear', 'hair drier', 'toothbrush', 'banner', 'blanket', 'bridge', 'cardboard',
-               'counter', 'curtain', 'door-stuff', 'floor-wood', 'flower', 'fruit', 'gravel', 'house', 'light',
-               'mirror-stuff', 'net', 'pillow', 'platform', 'playingfield', 'railroad', 'river', 'road', 'roof',
-               'sand', 'sea', 'shelf', 'snow', 'stairs', 'tent', 'towel', 'wall-brick', 'wall-stone', 'wall-tile',
-               'wall-wood', 'water', 'window-blind', 'window', 'tree', 'fence', 'ceiling', 'sky', 'cabinet', 'table',
-               'floor', 'pavement', 'mountain', 'grass', 'dirt', 'paper', 'food', 'building', 'rock', 'wall', 'rug']
+    for class_ in PANOPTIC_CLASSES:
+        es.index(index="object_id_mapping",
+                 id=PANOPTIC_CLASSES.index(class_),
+                 document={"obj_name": class_})  # inserting into index
 
-    for i in range(len(classes)):
-        es.index(index="object_id_mapping", id=i, document={"obj_name":classes[i]})  # inserting into index
+    db_obj.close()  # closing database connection

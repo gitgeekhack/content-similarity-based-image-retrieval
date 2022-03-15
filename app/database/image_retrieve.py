@@ -1,31 +1,38 @@
 # importing required libraries
 import json
-from app.manage import create_database_connection
+from .db_connection_manager import DatabaseConnection
+from app.common.utils import object_to_key_map
 
-es = create_database_connection()  # creating connection with elasticsearch database
+# object for database activities
+db_obj = DatabaseConnection()
+
 
 # function for retrieving images by search keyword
 def retrieve_by_single_object(searchkey):
+    es = db_obj.connect()  # connecting to database
+
     # getting numeric key using search keyword
-    response1 = es.search(index="object_id_mapping", body={"query":{"match":{"obj_name":searchkey}}})
-    mapped_key = response1['hits']['hits'][0]['_id']
+    mapped_key = object_to_key_map(es, searchkey)
 
     # retrieving images based on numeric key
-    response2 = es.search(index="images", body={"query":{"match":{"detected_objects":mapped_key}}})
+    response = es.search(index="images", body={"query":{"match":{"detected_objects":mapped_key}}})
     images_with_searchkey = []
-    for i in response2['hits']['hits']:
+    for i in response['hits']['hits']:
         images_with_searchkey.append(i['_source']['imgpath'])
+
+    db_obj.close(es)  # closing database connection
 
     return images_with_searchkey
 
 
 # function for retrieving images which contains all objects of input image
 def retrieve_by_multiple_objects(objects):
+    es = db_obj.connect()  # connecting to database
+
     # convert object names from string to numeric id
     mapped_keys = []
-    for i in objects:
-        res = es.search(index="object_id_mapping", body={"query":{"match":{"obj_name":i}}})
-        mapped_keys.append(res['hits']['hits'][0]['_id'])
+    for object in objects:
+        mapped_keys.append(object_to_key_map(es, object))
 
     # creating query string for retrieving images with all objects
     str1= '{"query": {"bool": {"must": ['
@@ -38,11 +45,13 @@ def retrieve_by_multiple_objects(objects):
     # Elasticsearch.search() function requires query as 'dict' object 
     # converting 'str' to 'dict' object
     query_string = json.loads(final_str)
-    response = es.search(index="images", body=query_string)
+    response = es.search(index="images", body=query_string)  # query for searching images from database
 
     # storing images into list using response object
     images_with_objects = []
     for i in response['hits']['hits']:
         images_with_objects.append(i['_source']['imgpath'])
+
+    db_obj.close(es)  # closing database connection
 
     return images_with_objects

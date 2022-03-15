@@ -1,5 +1,5 @@
 # importing helper programmes
-from app.service.helper import Object_detection
+from app.service.helper import object_detection
 from app.database.image_store import store_to_db
 from app.database.image_retrieve import retrieve_by_multiple_objects
 
@@ -7,7 +7,7 @@ from app.database.image_retrieve import retrieve_by_multiple_objects
 # object detection on image
 class ObjectDetector:
     def detect(self, imgpath):
-        objects_detected = Object_detection.predict(imgpath)
+        objects_detected = object_detection.predict(imgpath)
         return objects_detected
 
 

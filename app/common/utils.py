@@ -3,8 +3,20 @@ import os
 from configparser import ConfigParser
 from io import StringIO
 from logging.handlers import TimedRotatingFileHandler
+from app.constant import ALLOWED_EXTENSIONS
 
 INSTANCE_LOG_FOLDER_PATH = os.path.abspath(os.path.join(__file__, '..', '..', '..', 'logs'))
+
+
+# function to convert string object name to numeric id
+def object_to_key_map(es, object):
+    response = es.search(index="object_id_mapping", body={"query": {"match": {"obj_name": object}}})
+    return response['hits']['hits'][0]['_id']
+
+
+# function to check is file valid or not
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def read_properties_file(file_path):
@@ -68,3 +80,4 @@ class LogFormatter(logging.Formatter):
                                          record.levelname, location_line,
                                          record.getMessage())
         return s
+
