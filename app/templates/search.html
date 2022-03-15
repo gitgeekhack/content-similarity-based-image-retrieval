@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Search Images</title>
+{% endblock %}
+
+{% block additional_script %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.css">
+    <style>
+        .gallery {
+        padding: 40px;
+        }
+
+        .gallery img {
+        width: 100%;
+        border-radius: 0;
+        position: relative;
+        }
+    </style>
+{% endblock %}
+
+{% block h1 %}
+    <h1 class="display-5">Search images based on input image</h1>
+{% endblock %}
+
+{% block data %}
+    <a href="{{ url_for('main_app.homepage') }}"><button class="btn btn-outline-primary btn-sm"> ← Click to go home</button></a>
+	<br><br>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category=='error' %}
+                    <p class="alert alert-danger">{{ message }}</p>
+                {% endif %}
+                {% if category=='info' %}
+                    <p class="alert alert-success">{{ message }}</p>
+                {% endif %}
+                {% if category=='warning' %}
+                    <p class="alert alert-warning">{{ message }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="post" action="/search" enctype="multipart/form-data">
+        <input type="file" name="input_image" autocomplete="off" required>
+        <button type="submit" class="btn btn-outline-success" onclick="func()">Search</button>
+    </form>
+
+    {% if image_names %}
+        <div class="container-fluid">
+            <div class="row gallery">
+                <br><p class="display-6">Retrieved Images</p>
+                {% for image in image_names %}
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <a href="{{ url_for('main_app.send_image', filename=image) }}">
+                          <img class="img-fluid"src="{{ url_for('main_app.send_image', filename=image) }}" style="padding:7px">
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
+    <script>
+        baguetteBox.run(".gallery", {
+          animation: "slideIn"
+        });
+    </script>
+{% endblock %}
