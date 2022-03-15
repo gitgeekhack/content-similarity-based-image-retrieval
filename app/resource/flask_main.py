@@ -84,13 +84,17 @@ def search_image():
             # print("Time for detecting objects from image",time.time() - a)  # displaying time taken
 
             if not detected_objects:
-                flash('No objects in given image, please select another image',
-                      'warning')  # displaying warning
+                flash('No objects in given image, please try with another image',
+                      'warning')  # displaying warning when no objects in input image
                 return redirect(request.url)
 
             # retrieving images
             # b=time.time()  # for time measuring
             images_with_object = obj_RetrieveImages.retrieve(detected_objects)  # returned image paths from database
+            if not images_with_object:
+                flash('No similar images found, please try with another image',
+                      'warning')  # displaying warning when no similar images found
+                return redirect(request.url)
             # print("Time for retrieving images from db",time.time() - b)  # displaying time taken
 
             # converting image paths to image names
