@@ -37,34 +37,55 @@ def upload_image():
     if 'files[]' not in request.files:
         return redirect(request.url)
     files = request.files.getlist('files[]')
-    file_names = []  # it will store all files uploaded
+
+    if len(files) > 5:
+        flash('Maximum 5 files allowed at a time', 'warning')  # only 5 files allowed at a time
+        return redirect(request.url)
+
+    allowed_files = []  # allowed file list
+    not_allowed_files = []  # not allowed file list
+    images_with_no_objects = []  # images which doesn't contain objects
+
     for file in files:
-        if allowed_file(file.filename):  # checking for allowed file
-            filename = secure_filename(file.filename)
-            file_names.append(filename)
+        if allowed_file(file.filename):
+            allowed_files.append(file)
+        else:
+            not_allowed_files.append(secure_filename(file.filename))
 
-            image_path = os.path.join(UPLOAD_FOLDER, filename)
-            file.save(image_path)  # saving file at path specified by 'image_path'
+    for file in allowed_files:
+        filename = secure_filename(file.filename)
 
-            # detecting objects
-            # a=time.time()  # for time measuring
-            detected_objects = obj_ObjectDetector.detect(image_path)
-            # print("Time for detecting objects from image",time.time() - a)  # displaying time taken
-            if not detected_objects:
-                flash('No objects in given image, please select another image',
-                      'warning')  # displaying warning if no objects in given image
-                return redirect(request.url)
+        image_path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(image_path)  # saving file at path specified by 'image_path'
 
-            # storing image to database
-            # b=time.time()  # for time measuring
+        # detecting objects
+        # a=time.time()  # for measuring execution time
+        detected_objects = obj_ObjectDetector.detect(image_path)
+        # print("Time for detecting objects from image",time.time() - a)  # displaying time taken
+
+        # storing image to database
+        if detected_objects:
+            # b=time.time()  # for measuring execution time
             obj_StoreImage.store(image_path, detected_objects)
             # print("Time for storing objects to db",time.time() - b)  # displaying time taken
         else:
-            flash('Allowed file types are : png, jpg, jpeg', 'error')  # displaying error message if file not allowed
-            return redirect(request.url)
-    flash('Uploaded!!!', 'info')  # displaying success message that all files are uploaded
+            images_with_no_objects.append(filename)
 
-    return render_template('upload.html', filenames=file_names)
+    # Displaying various flash messages
+
+    # uploaded files contains some not allowed file
+    if not_allowed_files:
+        flash('Allowed file types are : png, jpg, jpeg', 'error')
+        flash("This files are not allowed: "+str(not_allowed_files), "warning")
+
+    # some uploaded images doesn't contain any objects
+    if images_with_no_objects:
+        flash("No objects detected in this images: "+str(images_with_no_objects), "warning")
+
+    # displaying all files which are uploaded
+    flash('Uploaded images: '+str([secure_filename(file.filename) for file in allowed_files if secure_filename(file.filename) not in images_with_no_objects]), 'info')
+
+    return render_template('upload.html')
 
 
 # function for searching image
