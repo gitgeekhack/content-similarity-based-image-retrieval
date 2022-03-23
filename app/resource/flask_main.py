@@ -59,15 +59,15 @@ def upload_image():
         file.save(image_path)  # saving file at path specified by 'image_path'
 
         # detecting objects
-        # a=time.time()  # for measuring execution time
+        a=time.time()  # for measuring execution time
         detected_objects = obj_ObjectDetector.detect(image_path)
-        # print("Time for detecting objects from image",time.time() - a)  # displaying time taken
+        print("Time for detecting objects from image",time.time() - a)  # displaying time taken
 
         # storing image to database
         if detected_objects:
-            # b=time.time()  # for measuring execution time
+            b=time.time()  # for measuring execution time
             obj_StoreImage.store(image_path, detected_objects)
-            # print("Time for storing objects to db",time.time() - b)  # displaying time taken
+            print("Time for storing objects to db",time.time() - b)  # displaying time taken
         else:
             images_with_no_objects.append(filename)
 
@@ -84,7 +84,6 @@ def upload_image():
 
     # displaying all files which are uploaded
     flash('Uploaded images: '+str([secure_filename(file.filename) for file in allowed_files if secure_filename(file.filename) not in images_with_no_objects]), 'info')
-
     return render_template('upload.html')
 
 
@@ -100,9 +99,9 @@ def search_image():
             file.save(image_path)  # saving image to upload folder
 
             # detecting objects
-            # a=time.time()  # for time measuring
+            a=time.time()  # for time measuring
             detected_objects = obj_ObjectDetector.detect(image_path)
-            # print("Time for detecting objects from image",time.time() - a)  # displaying time taken
+            print("Time for detecting objects from image",time.time() - a)  # displaying time taken
 
             if not detected_objects:
                 flash('No objects in given image, please try with another image',
@@ -110,17 +109,17 @@ def search_image():
                 return redirect(request.url)
 
             # retrieving images
-            # b=time.time()  # for time measuring
+            b=time.time()  # for time measuring
             images_with_object = obj_RetrieveImages.retrieve(detected_objects)  # returned image paths from database
+            print("Time for retrieving images from db",time.time() - b)  # displaying time taken
             if not images_with_object:
                 flash('No similar images found, please try with another image',
                       'warning')  # displaying warning when no similar images found
                 return redirect(request.url)
-            # print("Time for retrieving images from db",time.time() - b)  # displaying time taken
 
             # converting image paths to image names
             for i in images_with_object:
-                image_names.append(i.split('/')[-1])
+                image_names.append(i.split('\\')[-1])
         else:
             flash('Allowed file types are : png, jpg, jpeg', 'error')  # displaying error message if file not allowed
             return redirect(request.url)

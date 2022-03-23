@@ -2,7 +2,7 @@
 from flask import jsonify, make_response
 from app.manage import create_app
 
-app, logger = create_app(debug=True)  # creating flask app using function
+app, logger = create_app()  # creating flask app using function
 
 # importing Blueprint flask apps
 from app.resource.common import common_app

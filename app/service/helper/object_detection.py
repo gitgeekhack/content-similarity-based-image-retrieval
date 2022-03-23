@@ -4,6 +4,7 @@ warnings.filterwarnings('ignore')
 
 # importing libraries
 import cv2
+import torch
 
 # Importing function to resize images
 from app.service.helper.image_resizer import image_resize
@@ -14,7 +15,7 @@ from app.constant import APP_ROOT
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog
-from detectron2.projects.deeplab import add_deeplab_config
+from projects.DeepLab.deeplab import add_deeplab_config
 coco_metadata = MetadataCatalog.get("coco_2017_val_panoptic")
 
 # Configurations to use pre-trained model
@@ -51,5 +52,8 @@ def predict(image_path):
     for i in outputs["panoptic_seg"][1]:
         obj = coco_metadata.stuff_classes[i['category_id']]
         detected.add(obj)
+
+    # clearing torch GPU cache memory
+    torch.cuda.empty_cache()
 
     return list(detected)

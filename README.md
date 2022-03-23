@@ -1,9 +1,12 @@
 # content-based-image-retrieval-poc-
-### For runnig this project on CPU only device:
-**Install Detectron2 CPU only** :-
+### For runnig this project on GPU device:
+**Install Detectron2** :-
 
-    python -m pip install detectron2 -f \
-    https://dl.fbaipublicfiles.com/detectron2/wheels/cpu/torch1.10/index.html
+    # clone repository
+    git clone https://github.com/facebookresearch/detectron2.git
+
+    # install from cloned repository
+    python -m pip install -e detectron2
   
 **Install libraries from 'requirements.txt' using**:-
 
