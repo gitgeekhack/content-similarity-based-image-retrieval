@@ -9,9 +9,9 @@
     {% block additional_script %}
     {% endblock %}
     <style>
-        h1{
-            background-color : #9ab59a;
-            color : #995418;
+        div.newnav{
+            background-color : black;
+            color : white;
         }
 
         body{
@@ -50,12 +50,13 @@
                 visibility: hidden;
             }
         }
-    {% block css %}
-    {% endblock %}
+
+        {% block css %}
+        {% endblock %}
     </style>
 </head>
 <body>
-    {% block h1 %}{% endblock %}
+    {% block heading %}{% endblock %}
 
     <div class="temp">
         <img src="{{ url_for('static', filename='loading.gif') }}">
@@ -63,14 +64,22 @@
 
     {% block data %}{% endblock %}
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script>
         var func = function(){
             const loader = document.querySelector(".temp");
             loader.className += " loader";
         };
+
         window.addEventListener("load", function () {
             const loader = document.querySelector(".loader");
             loader.className += " hidden";
+        });
+
+        $(document).ready(function(){
+          $("#form_loading").on("submit", function(){
+            func();
+          });
         });
     </script>
 </body>

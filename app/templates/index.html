@@ -1,16 +1,21 @@
 {% extends 'base.html' %}
 
+
 {% block title %}
-    <title>Home Page</title>
+    <title>CBIR - Home page</title>
 {% endblock %}
 
-{% block h1 %}
-    <center><h1 class="display-5">Content Based Image Retrieval</h1></center>
+
+{% block heading %}
+    <div class="display-6 newnav" >
+        <center><a style="font-size:1.3em;">Content Based Image Retrieval</a></center>
+    </div>
 {% endblock %}
 
 
 {% block data %}
-    <center><h3>Here you can search images based on content of input image</h3></center>
+    <br>
+    <h3 style="text-align:center;">Here you can search images based on content of input image</h3>
     <br>
     <center>
         <div class="d-grid gap-5 d-md-block">

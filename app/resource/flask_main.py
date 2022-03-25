@@ -83,7 +83,8 @@ def upload_image():
         flash("No objects detected in this images: "+str(images_with_no_objects), "warning")
 
     # displaying all files which are uploaded
-    flash('Uploaded images: '+str([secure_filename(file.filename) for file in allowed_files if secure_filename(file.filename) not in images_with_no_objects]), 'info')
+    if allowed_files:
+        flash('Uploaded images: '+str([secure_filename(file.filename) for file in allowed_files if secure_filename(file.filename) not in images_with_no_objects]), 'info')
 
     return render_template('upload.html')
 
