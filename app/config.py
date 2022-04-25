@@ -14,7 +14,7 @@ class DevelopmentConfig(BaseConfig):
     ENVIRONMENT = 'Development'
     HOST = "https://localhost:9200"
     USERNAME = "elastic"
-    PASSWORD = "p4B14XiPBKN8XPa5jL_3"
+    PASSWORD = "chjpVZ=wb13+pV8vWS=q"
 
 
 class StagingConfig(BaseConfig):
