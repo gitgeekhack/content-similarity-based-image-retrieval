@@ -28,8 +28,8 @@ def create_app(debug=False):
     es = db_obj.connect()  # connecting to database
     # create index if not exists
     try:
-        es.indices.create(index="images")
-        create_numeric_id_mapping()  # creating mapping of object names to numeric id
+        es.indices.create(index="Image_Indexed")
+        es.indices.create(index="Vector_id_mapping")
     except:
         pass
     db_obj.close(es)  # closing database connection

@@ -1,5 +1,15 @@
 # importing required libraries
 import os
+import tensorflow_hub as hub
+
+module_handle = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/4"
+MODULE = hub.load(module_handle)
+
+DIMENTIONS = 1792
+NEIGHBORS = 5
+TREES = 1000
+
+FILEINDEX_TO_VECTOR = {}
 
 SECRET_KEY = 'asdklxjcnsjdkf'  # secret key for django app
 
