@@ -7,6 +7,8 @@ from app.common.utils import allowed_file
 from app.constant import UPLOAD_FOLDER
 import time
 
+from app.service.helper import indexer, searcher
+
 # importing helper functions
 from app.service.image_store_and_retrieve import ObjectDetector, StoreImage, RetrieveImages
 

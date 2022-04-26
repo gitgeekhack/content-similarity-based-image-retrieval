@@ -3,7 +3,8 @@ import numpy as np
 import time
 import glob
 import os.path
-from app.constant import MODULE
+from app.constant import MODULE, APP_ROOT
+
 
 class FeatureExtraction:
     def load_img(self, image_path):
@@ -23,7 +24,6 @@ class FeatureExtraction:
 
         return img
 
-
     def single_image_vector(self, filename):
         img = self.load_img(filename)
 
@@ -35,7 +35,7 @@ class FeatureExtraction:
 
     def save_image_vector(self, filename, feature_vector):
         outfile_name = os.path.basename(filename).split('.')[0] + ".npz"
-        out_path = os.path.join('/home/nirav/PycharmProjects/Imagesimilarity_faiss/vectors', outfile_name)
+        out_path = os.path.join(APP_ROOT + '/data/Vectors', outfile_name)
 
         # Saves the 'feature_set' to a text file
         np.savetxt(out_path, feature_vector, delimiter=',')
@@ -44,11 +44,16 @@ class FeatureExtraction:
         # Definition of module with using tfhub.dev handle
         print("----- Generating Feature Vectors -----")
 
+        # for file in not_already_vectored:
+
+
         starttime = time.time()
         # Loops through all images in a local folder
+        arr = []
         for filename in filenames:  # assuming gif
             feature_vector = self.single_image_vector(filename)
-
+            arr.append(feature_vector)
             self.save_image_vector(filename, feature_vector)
 
-        print("Time taken to generate feature vectors : %f seconds"%(time.time() - starttime))
+        print(f"Time taken to generate feature vectors : {time.time() - starttime} seconds")
+        return arr
