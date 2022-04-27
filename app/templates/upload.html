@@ -2,13 +2,13 @@
 
 
 {% block title %}
-    <title>Upload images</title>
+    <title>Index images</title>
 {% endblock %}
 
 
 {% block heading %}
     <div class="display-6 newnav" style="height:1.4em;">
-        <a style="margin-left:2%">Upload Images</a>
+        <a style="margin-left:2%">Upload Images to Index</a>
         <a href="{{ url_for('main_app.homepage') }}" style="float:right; margin-right:2%"><button class="btn btn-outline-light">Home</button></a>
     </div>
 {% endblock %}
@@ -17,7 +17,7 @@
 {% block data %}
     <div style="margin-left:2%; margin-right:2%;">
         <br>
-        <p style="font-size:1.5em;">Select images to upload</p>
+        <p style="font-size:1.5em;">Select images</p>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}

@@ -5,9 +5,9 @@ from flask import Flask
 # importing helper programmes
 from app.common.utils import setup_logger, read_properties_file
 from app.config import CONFIG
-from app.constant import UPLOAD_FOLDER, SECRET_KEY, APP_ROOT
+from app.constant import UPLOAD_FOLDER, SAVED_INDEX_FOLDER, SECRET_KEY, APP_ROOT
 from app.database.db_connection_manager import DatabaseConnection
-from app.database.object_to_id_mapping import create_numeric_id_mapping
+
 
 # object for database activities
 db_obj = DatabaseConnection()
@@ -22,16 +22,20 @@ def create_app(debug=False):
     config_name = os.getenv('FLASK_CONFIGURATION', config['environment'])
     app.config.from_object(CONFIG[config_name])
 
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # create if folder not exists
+    # create required folders if not exists
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    os.makedirs(SAVED_INDEX_FOLDER, exist_ok=True)
+
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # setting upload folder of application
 
     es = db_obj.connect()  # connecting to database
-    # create index if not exists
+
+    # create elasticsearch index if not exists
     try:
-        es.indices.create(index="image_indexed")
         es.indices.create(index="vector_mapping")
-    except:
-        pass
+    except Exception as e:
+        app.logger.warning('Index already present', e)
+
     db_obj.close(es)  # closing database connection
 
     logger = setup_logger()

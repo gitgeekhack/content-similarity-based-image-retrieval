@@ -1,22 +1,26 @@
+# importing required images
 import faiss
-import time
-from generate_feature_vectors import FeatureExtraction
-from app.constant import APP_ROOT
+import app
+from app.service.helper.generate_feature_vectors import FeatureExtraction
+from app.constant import SAVED_INDEX_FOLDER
+from app.service.helper import indexer
+from app.database.db_helper import get_imagename_by_id
+from app.constant import NO_OF_NEIGHBORS
 
-obj = FeatureExtraction()
-
-try:
-    index = faiss.read_index(APP_ROOT + '/data/SavedIndex/file.index')
-except:
-    print('Index not available')
+vector_obj = FeatureExtraction()  # object for generating vectors
 
 
-class SearchSimilarImages:
-    def search(self, imagepath):
-        vector = obj.single_image_vector(imagepath)
-        t = time.time()
-        distance, indx = index.search(vector.reshape(1, -1), 5)
-        print('time taken to search:', time.time()-t)
+def searching(imagepath):
+    # read index if available else give error message
+    try:
+        faiss_index = faiss.read_index(SAVED_INDEX_FOLDER+'/file.index')
+    except Exception as e:
+        app.logger.warning("Error in loading index", e)
+        return None
 
-        print(indx)
+    vector = vector_obj.getvectors(imagepath)  # generating all vectors
+    distances, indexes = faiss_index.search(vector[0].reshape(1, -1), NO_OF_NEIGHBORS)  # searching similar images
+    indexer.indexing(imagepath)  # adding search image to faiss index
+
+    return get_imagename_by_id(indexes[0])  # returning imagenames by using indexes returned by search
 

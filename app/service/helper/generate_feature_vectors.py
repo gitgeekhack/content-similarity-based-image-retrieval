@@ -1,15 +1,19 @@
 import tensorflow as tf
 import numpy as np
-import time
-import glob
+from app.common.utils import MonoState
 import os.path
-from app.constant import MODULE, APP_ROOT
+from app.constant import APP_ROOT
+import tensorflow_hub as hub
+
+module_handle = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/4"
+module = hub.load(module_handle)
 
 
-class FeatureExtraction:
+class FeatureExtraction(MonoState):
+
+    # function for reading image from storage
     def load_img(self, image_path):
-        # Reads the image file and returns data type of string
-        img = tf.io.read_file(image_path)
+        img = tf.io.read_file(image_path)  # reading image
 
         # Decodes the image to W x H x 3 shape tensor with type of uint8
         img = tf.io.decode_jpeg(img, channels=3)
@@ -24,36 +28,12 @@ class FeatureExtraction:
 
         return img
 
-    def single_image_vector(self, filename):
-        img = self.load_img(filename)
-
-        # Calculate the image feature vector of the img
-        features = MODULE(img)
-
-        # Remove single-dimensional entries from the 'features' array
-        return np.squeeze(features)
-
-    def save_image_vector(self, filename, feature_vector):
-        outfile_name = os.path.basename(filename).split('.')[0] + ".npz"
-        out_path = os.path.join(APP_ROOT + '/data/Vectors', outfile_name)
-
-        # Saves the 'feature_set' to a text file
-        np.savetxt(out_path, feature_vector, delimiter=',')
-
+    # function for generating vectors
     def getvectors(self, filenames):
-        # Definition of module with using tfhub.dev handle
-        print("----- Generating Feature Vectors -----")
-
-        # for file in not_already_vectored:
-
-
-        starttime = time.time()
-        # Loops through all images in a local folder
         arr = []
-        for filename in filenames:  # assuming gif
-            feature_vector = self.single_image_vector(filename)
+        for filename in filenames:
+            img = self.load_img(filename)
+            features = module(img)
+            feature_vector = np.squeeze(features)
             arr.append(feature_vector)
-            self.save_image_vector(filename, feature_vector)
-
-        print(f"Time taken to generate feature vectors : {time.time() - starttime} seconds")
         return arr

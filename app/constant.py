@@ -1,23 +1,20 @@
 # importing required libraries
 import os
-import tensorflow_hub as hub
 
-module_handle = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/4"
-MODULE = hub.load(module_handle)
-
-DIMENTIONS = 1792
-NEIGHBORS = 5
-TREES = 1000
+DIMENSION = 1792
+NO_OF_NEIGHBORS = 5
 
 FILEINDEX_TO_VECTOR = {}
 
-SECRET_KEY = 'asdklxjcnsjdkf'  # secret key for django app
+SECRET_KEY = 'asdklxjcnsjdkf'  # secret key for flask app
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}  # file extensions supported for our app
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))  # root folder of application
 
 UPLOAD_FOLDER = APP_ROOT + '/data/Uploaded_images'  # upload folder for images
+
+SAVED_INDEX_FOLDER = APP_ROOT + '/data/SavedIndex'  # folder path for saving faiss index
 
 # available classes in Mask2Former model for panoptic segmentation
 PANOPTIC_CLASSES = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light',

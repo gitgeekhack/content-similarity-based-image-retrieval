@@ -1,37 +1,44 @@
-import os
+# importing required libraries
 import faiss
+import app
 from app.service.helper.generate_feature_vectors import FeatureExtraction
-from app.database.store import vector_already_present, store_not_indexed
-from app.constant import APP_ROOT
+from app.database.db_helper import vector_already_present, store_not_indexed
+from app.database.db_connection_manager import DatabaseConnection
+from app.constant import SAVED_INDEX_FOLDER, DIMENSION
 import numpy as np
-import glob
 
-obj = FeatureExtraction()
+vector_obj = FeatureExtraction()  # object for generating vectors
 
-no_of_vectors = len(os.listdir(APP_ROOT + "/data/Vectors"))
+db_obj = DatabaseConnection()  # object for database related operations
 
+es = db_obj.connect()
+total_indexed = es.count(index="vector_mapping")['count']  # finding no. of already indexed items
+db_obj.close(es)
+
+# crete faiss index if not present else read from storage
 try:
-    faiss_index = faiss.read_index(APP_ROOT + '/data/SavedIndex/file.index')
-except:
-    quantizer = faiss.IndexFlatIP(1792)
-    faiss_index = faiss.IndexIVFFlat(quantizer, 1792, int(np.sqrt(no_of_vectors)) + 1, faiss.METRIC_L2)
+    faiss_index = faiss.read_index(SAVED_INDEX_FOLDER + '/file.index')
+except Exception as e:
+    app.logger.info("Creating Faiss index")
+    quantizer = faiss.IndexFlatIP(DIMENSION)
+    faiss_index = faiss.IndexIVFFlat(quantizer, DIMENSION, int(np.sqrt(total_indexed)) + 1, faiss.METRIC_L2)
 
 
-def Index(files):
-    arr = obj.getvectors(files)
+def indexing(files):
+    arr = vector_obj.getvectors(files)  # generating all vectors
 
-    not_present_vectors = vector_already_present(arr)
+    not_present_vectors, ids = vector_already_present(arr)  # finding vectors which is not present in index
 
     if not_present_vectors:
-        numpy_arr = np.array(not_present_vectors, dtype='float32')
+        numpy_arr = np.array(not_present_vectors, dtype='float32')  # converting vector to 'float32' datatype
 
-        faiss.normalize_L2(numpy_arr)
-        faiss_index.train(numpy_arr)
-        faiss_index.add(numpy_arr)
-        faiss.write_index(faiss_index, APP_ROOT+'/data/SavedIndex/file.index')
+        faiss.normalize_L2(numpy_arr)  # normalizing array
+        faiss_index.train(numpy_arr)  # training faiss index
+        faiss_index.add(numpy_arr)  # adding vectors to faiss index
+        faiss.write_index(faiss_index, SAVED_INDEX_FOLDER+'/file.index')  # saving faiss index to storage
 
-        store_not_indexed(files, not_present_vectors)
+        store_not_indexed(files, arr, ids)  # storing vectors to database
 
+    return len(not_present_vectors)
 
-Index(glob.glob("/home/nirav/Desktop/Image/*.jpg"))
 

@@ -2,25 +2,26 @@
 
 
 {% block title %}
-    <title>CBIR - Home page</title>
+    <title>Image Similarity Using Faiss</title>
 {% endblock %}
 
 
 {% block heading %}
     <div class="display-6 newnav" >
-        <center><a style="font-size:1.3em;">Content Based Image Retrieval</a></center>
+        <div style="width: 100%; text-align:center;"><a style="font-size:1.3em;">Image Similarity Detection</a></div>
     </div>
 {% endblock %}
 
 
 {% block data %}
     <br>
-    <h3 style="text-align:center;">Here you can search images based on content of input image</h3>
+    <h3 style="text-align:center;">Here you can search images similar to input image</h3>
     <br>
-    <center>
+
+    <div style="width: 100%; text-align:center;">
         <div class="d-grid gap-5 d-md-block">
-            <a class="btn btn-outline-dark" href="/upload" role="button" methods="post">Upload</a>
-            <a class="btn btn-outline-dark" href="/search" role="button" methods="get">Search</a>
+            <a class="btn btn-outline-dark" href="/upload" role="button">Indexing</a>
+            <a class="btn btn-outline-dark" href="/search" role="button">Searching</a>
         </div>
-    </center>
+    </div>
 {% endblock %}

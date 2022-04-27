@@ -2,7 +2,7 @@
 
 
 {% block title %}
-    <title>Search Images</title>
+    <title>Search Similar Images</title>
 {% endblock %}
 
 
@@ -33,7 +33,7 @@
 {% block data %}
     <div style="margin-left:2%; margin-right:2%;">
 	    <br>
-        <p style="font-size:1.5em;">Select image for searching similar images</p>
+        <p style="font-size:1.5em;">Select input image for searching similar images</p>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -62,7 +62,8 @@
                     <div class="col-sm-6 col-md-4 col-lg-2">
                         <div class="thumbnail">
                             <a href="{{ url_for('main_app.send_image', filename=image) }}">
-                                <img class="diplay_image" src="{{ url_for('main_app.send_image', filename=image) }}" style="padding:5px;" height="250" width="250">
+                                <img class="diplay_image" src="{{ url_for('main_app.send_image', filename=image) }}"
+                                     style="padding:5px;" height="250" width="250" alt="Failed to load image">
                             </a>
                         </div>
                     </div>
