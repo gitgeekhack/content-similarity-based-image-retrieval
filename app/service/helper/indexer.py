@@ -21,7 +21,7 @@ try:
 except Exception as e:
     app.logger.info("Creating Faiss index")
     quantizer = faiss.IndexFlatIP(DIMENSION)
-    faiss_index = faiss.IndexIVFFlat(quantizer, DIMENSION, int(np.sqrt(total_indexed)) + 1, faiss.METRIC_L2)
+    faiss_index = faiss.IndexIVFFlat(quantizer, DIMENSION, 20, faiss.METRIC_L2)
 
 
 def indexing(files):

@@ -12,7 +12,7 @@ class ImageIndexer(MonoState):
 
 # Image searcher
 class ImageSearcher(MonoState):
-    def searchimages(self, imagepath):
-        similar_images = searcher.searching(imagepath)  # image searching
+    def searchimages(self, imagepath, range_search):
+        similar_images = searcher.searching(imagepath, range_search)  # image searching
         return similar_images
 

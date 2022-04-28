@@ -9,6 +9,7 @@ from app.service.search_and_index_images import ImageIndexer, ImageSearcher
 
 flask_main_app = Blueprint('main_app', __name__)  # creating Blueprint for flask app
 
+file = None
 
 # rendering index.html on homepage of app
 @flask_main_app.route('/')
@@ -73,6 +74,7 @@ def upload_image():
 # function for searching image
 @flask_main_app.route('/search', methods=["POST", "GET"])
 def search_image():
+    global file
     file = request.files.get('input_image')
     image_names = []  # it will contain all image names returned from database
     if file:
@@ -83,11 +85,16 @@ def search_image():
 
             # detecting objects
             file_with_paths = [image_path]
-            similar_images = obj_imagesearcher.searchimages(file_with_paths)  # searching similar images
+            similar_images = obj_imagesearcher.searchimages(file_with_paths, range_search=False)  # searching similar images
 
             if not similar_images:
-                flash('Faiss index not available',
-                      'warning')  # displaying warning when no objects in input image
+                flash('No similar images found',
+                      'warning')  # display warning if no similar images found
+                return redirect(request.url)
+
+            if similar_images == 'No index':
+                flash('Faiss index not available, first create it by indexing images',
+                      'warning')  # display warning if faiss index not available
                 return redirect(request.url)
 
             # converting image paths to image names
@@ -103,4 +110,26 @@ def search_image():
 @flask_main_app.route('/search/<filename>')
 def send_image(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
+
+
+# function for searching similar images based on distance threshold
+@flask_main_app.route('/load_more')
+def search_multiple():
+    global file
+
+    image_names = []  # it will contain all image names returned from database
+    filename = secure_filename(file.filename)
+    image_path = os.path.join(UPLOAD_FOLDER, filename)
+
+    # detecting objects
+    file_with_paths = [image_path]
+    similar_images = obj_imagesearcher.searchimages(file_with_paths, range_search=True)  # searching similar images
+
+    # converting image paths to image names
+    for i in similar_images:
+        image_names.append(i.split('/')[-1])
+
+    return render_template("temp.html", image_names=image_names)
+
+
 

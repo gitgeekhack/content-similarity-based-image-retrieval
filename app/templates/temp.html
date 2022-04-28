@@ -2,7 +2,7 @@
 
 
 {% block title %}
-    <title>Search Similar Images</title>
+    <title>Similar Images by Distance Threshold</title>
 {% endblock %}
 
 
@@ -23,17 +23,10 @@
 
 
 {% block heading %}
-    <div class="display-6 newnav" style="height:1.4em;">
-        <a style="margin-left:2%; text-align:center;">Search Images</a>
-        <a href="{{ url_for('main_app.homepage') }}" style="float:right; margin-right:2%;"><button class="btn btn-outline-light">Home</button></a>
-    </div>
 {% endblock %}
 
 
 {% block data %}
-    <div style="margin-left:2%; margin-right:2%;">
-	    <br>
-        <p style="font-size:1.5em;">Select input image for searching similar images</p>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -50,11 +43,6 @@
             {% endif %}
         {% endwith %}
 
-        <form method="post" action="/search" enctype="multipart/form-data" id="form_loading">
-            <input type="file" name="input_image" autocomplete="off" required>
-            <input type="submit" class="btn btn-dark" value="Search" />
-        </form>
-
         {% if image_names %}
             <div class="row gallery" style="padding-left:0px; padding-right:0px;" id="main_gallery">
                 <p style="font-size:1.2em">Similar Images: </p>
@@ -68,31 +56,14 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="col-sm-6 col-md-4 col-lg-2">
-                    <div class="thumbnail">
-
-                        <button type="button" class="btn btn-outline-dark" onclick="load_page()"
-                                style="padding:5px; height:270px; width:100%; text-align:center;">Load More</button>
-
-                    </div>
-                </div>
             </div>
-            <div id="page_holder"></div>
         {% endif %}
-    </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
     <script>
         baguetteBox.run(".gallery", {
           animation: "slideIn"
         });
-
-        function load_page()
-        {
-             $("#main_gallery").remove();
-             $.get("load_more",function(data){
-                   $("#page_holder").html(data);
-             });
-        }
     </script>
 {% endblock %}

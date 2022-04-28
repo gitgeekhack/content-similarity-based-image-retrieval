@@ -41,8 +41,9 @@ def get_imagename_by_id(ids):
 
     imagenames = []
     for i in ids:
-        response = es.get(index="vector_mapping", id=i)
-        imagenames.append(response['_source']['imagename'])
+        if i != -1:
+            response = es.get(index="vector_mapping", id=i)
+            imagenames.append(response['_source']['imagename'])
 
     db_obj.close(es)
     return imagenames
