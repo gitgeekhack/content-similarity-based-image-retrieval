@@ -20,8 +20,8 @@ try:
     faiss_index = faiss.read_index(SAVED_INDEX_FOLDER + '/file.index')
 except Exception as e:
     app.logger.info("Creating Faiss index")
-    quantizer = faiss.IndexFlatIP(DIMENSION)
-    faiss_index = faiss.IndexIVFFlat(quantizer, DIMENSION, 20, faiss.METRIC_L2)
+    faiss_index = faiss.IndexFlatIP(DIMENSION)
+    # faiss_index = faiss.IndexIVFFlat(quantizer, DIMENSION, int(np.sqrt(300)))
 
 
 def indexing(files):
@@ -33,7 +33,8 @@ def indexing(files):
         numpy_arr = np.array(not_present_vectors, dtype='float32')  # converting vector to 'float32' datatype
 
         faiss.normalize_L2(numpy_arr)  # normalizing array
-        faiss_index.train(numpy_arr)  # training faiss index
+        if not faiss_index.is_trained:
+            faiss_index.train(numpy_arr)  # training faiss index
         faiss_index.add(numpy_arr)  # adding vectors to faiss index
         faiss.write_index(faiss_index, SAVED_INDEX_FOLDER+'/file.index')  # saving faiss index to storage
 

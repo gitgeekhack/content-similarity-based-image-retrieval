@@ -129,7 +129,7 @@ def search_multiple():
     for i in similar_images:
         image_names.append(i.split('/')[-1])
 
-    return render_template("temp.html", image_names=image_names)
+    return render_template("range_search.html", image_names=image_names)
 
 
 
