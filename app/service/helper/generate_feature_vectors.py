@@ -1,8 +1,6 @@
 import tensorflow as tf
 import numpy as np
 from app.common.utils import MonoState
-import os.path
-from app.constant import APP_ROOT
 import tensorflow_hub as hub
 
 module_handle = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/4"
@@ -30,10 +28,10 @@ class FeatureExtraction(MonoState):
 
     # function for generating vectors
     def getvectors(self, filenames):
-        arr = []
+        vectors = []
         for filename in filenames:
             img = self.load_img(filename)
             features = module(img)
             feature_vector = np.squeeze(features)
-            arr.append(feature_vector)
-        return arr
+            vectors.append(feature_vector)
+        return vectors

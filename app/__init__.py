@@ -6,7 +6,7 @@ app, logger = create_app(debug=True)  # creating flask app using function
 
 # importing Blueprint flask apps
 from app.resource.common import common_app
-from app.resource.flask_main import flask_main_app
+from app.resource.imagesimilarity_webapp import flask_main_app
 
 # registering Blueprint flask apps
 app.register_blueprint(common_app)

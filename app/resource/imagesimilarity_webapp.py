@@ -36,7 +36,7 @@ def upload_image():
     files = request.files.getlist('files[]')
 
     if len(files) > 100:
-        flash('Maximum 100 files allowed at a time', 'warning')  # only 5 files allowed at a time
+        flash('Maximum 100 files allowed at a time', 'warning')  # only 100 files allowed at a time
         return redirect(request.url)
 
     allowed_files = []  # allowed file list
@@ -121,7 +121,6 @@ def search_multiple():
     filename = secure_filename(file.filename)
     image_path = os.path.join(UPLOAD_FOLDER, filename)
 
-    # detecting objects
     file_with_paths = [image_path]
     similar_images = obj_imagesearcher.searchimages(file_with_paths, range_search=True)  # searching similar images
 

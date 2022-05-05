@@ -68,14 +68,15 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="col-sm-6 col-md-4 col-lg-2">
-                    <div class="thumbnail">
 
-                        <button type="button" class="btn btn-outline-dark" onclick="load_page()"
-                                style="padding:5px; height:270px; width:100%; text-align:center;">Load More</button>
-
+                {% if image_names|length == 5 %}
+                    <div class="col-sm-6 col-md-4 col-lg-2">
+                        <div class="thumbnail">
+                            <button type="button" class="btn btn-outline-dark" onclick="load_page()"
+                                    style="padding:5px; height:270px; width:100%; text-align:center;">Load More</button>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             </div>
             <div id="page_holder"></div>
         {% endif %}

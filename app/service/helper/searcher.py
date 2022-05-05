@@ -19,16 +19,19 @@ def searching(imagepath, range_search):
         app.logger.warning("Error in loading index", e)
         return 'No index'
 
-    vector = vector_obj.getvectors(imagepath)  # generating all vectors
-    arr = np.array(vector, dtype='float32')
-    faiss.normalize_L2(arr)
-    similar_indexes = []
+    all_vectors = vector_obj.getvectors(imagepath)  # generating all vectors
+    numpy_vectors = np.array(all_vectors, dtype='float32')
+    faiss.normalize_L2(numpy_vectors)  # normalizing vectors
     if range_search:  # to search with distance threshold
-        _, distances, indexes = faiss_index.range_search(arr, DISTANCE_THRESHOLD)
+        _, distances, indexes = faiss_index.range_search(numpy_vectors, DISTANCE_THRESHOLD)  # searching similar images
+
+        # sorting indexes by distance
         similar_indexes = [indexes[list(distances).index(i)] for i in sorted(distances, reverse=True)]
     else:  # to search with no. of neighbors
-        distances, indexes = faiss_index.search(arr, NO_OF_NEIGHBORS)  # searching similar images
-        similar_indexes = indexes[0]
+        distances, indexes = faiss_index.search(numpy_vectors, NO_OF_NEIGHBORS)  # searching similar images
+
+        # filtering images by threshold
+        similar_indexes = [indexes[0][i] for i, distance in enumerate(distances[0]) if distance >= DISTANCE_THRESHOLD]
     indexer.indexing(imagepath)  # adding search image to faiss index
     return get_imagename_by_id(similar_indexes)  # returning imagenames by using indexes returned by search
 

@@ -7,10 +7,9 @@ db_obj = DatabaseConnection()  # object for connecting and closing database conn
 
 # checking vector already present or not
 def vector_already_present(vectors):
-    es = db_obj.connect()
+    es = db_obj.connect()  # connecting to database
 
-    not_present = []
-    ids = []
+    not_present, ids = [], []  # list to store not present vectors and its respective ids
 
     for j, vector in enumerate(vectors):
         str1 = '{"query": {"bool": {"must": ['
@@ -21,7 +20,7 @@ def vector_already_present(vectors):
         final_str = str1[:-1] + str2  # final query string
 
         query_string = json.loads(final_str)
-        response = es.search(index="vector_mapping", body=query_string)
+        response = es.search(index="vector_mapping", body=query_string)  # searching for vector already present or not
 
         if response['hits']['max_score']:
             if int(response['hits']['max_score']) != 1792:
@@ -30,14 +29,15 @@ def vector_already_present(vectors):
         else:
             not_present.append(vector)
             ids.append(j)
-    db_obj.close(es)
+
+    db_obj.close(es)  # closing database connection
 
     return not_present, ids
 
 
 # get imagename by id using database
 def get_imagename_by_id(ids):
-    es = db_obj.connect()
+    es = db_obj.connect()  # connecting to database
 
     imagenames = []
     for i in ids:
@@ -45,13 +45,14 @@ def get_imagename_by_id(ids):
             response = es.get(index="vector_mapping", id=i)
             imagenames.append(response['_source']['imagename'])
 
-    db_obj.close(es)
+    db_obj.close(es)  # closing database connection
+
     return imagenames
 
 
 # storing vectors to database
 def store_not_indexed(files, vectors, ids):
-    es = db_obj.connect()
+    es = db_obj.connect()  # connecting to database
 
     total_indexed = es.count(index="vector_mapping")['count']
 
@@ -62,5 +63,5 @@ def store_not_indexed(files, vectors, ids):
         }
         es.index(index="vector_mapping", document=doc, id=total_indexed+ids.index(id))
 
-    db_obj.close(es)
+    db_obj.close(es)  # closing database connection
 
