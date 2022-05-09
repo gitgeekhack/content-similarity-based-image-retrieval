@@ -17,10 +17,10 @@ def homepage():
     return render_template('index.html')
 
 
-# rendering upload.html for uploading images
-@flask_main_app.route('/upload')
+# rendering indexing.html for uploading images
+@flask_main_app.route('/index')
 def upload_form():
-    return render_template('upload.html')
+    return render_template('indexing.html')
 
 
 # creating required objects
@@ -29,8 +29,8 @@ obj_imagesearcher = ImageSearcher()
 
 
 # uploading and indexing image
-@flask_main_app.route('/upload', methods=['POST'])
-def upload_image():
+@flask_main_app.route('/index', methods=['POST'])
+def index_images():
     if 'files[]' not in request.files:
         return redirect(request.url)
     files = request.files.getlist('files[]')
@@ -68,7 +68,7 @@ def upload_image():
     if allowed_files:
         flash(f'Total images indexed: {image_indexed_count}, Already present in index: {len(allowed_files) - image_indexed_count}', 'info')
 
-    return render_template('upload.html')
+    return render_template('indexing.html')
 
 
 # function for searching image
@@ -91,7 +91,7 @@ def search_image():
             if not similar_images:
                 flash('No similar images found',
                       'warning')  # display warning if no similar images found
-                render_template('search.html', image_names=image_names, search_image=filename)
+                render_template('searching.html', image_names=image_names, search_image=filename)
 
             if similar_images == 'No index':
                 flash('Faiss index not available, first create it by indexing images',
@@ -104,7 +104,7 @@ def search_image():
         else:
             flash('Allowed file types are : png, jpg, jpeg', 'error')  # displaying error message if file not allowed
             return redirect(request.url)
-    return render_template('search.html', image_names=image_names, search_image=filename)
+    return render_template('searching.html', image_names=image_names, search_image=filename)
 
 
 # function to load images one by one using filename from upload folder
