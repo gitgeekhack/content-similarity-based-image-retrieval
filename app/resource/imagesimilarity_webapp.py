@@ -77,6 +77,7 @@ def search_image():
     global file
     file = request.files.get('input_image')
     image_names = []  # it will contain all image names returned from database
+    filename = None
     if file:
         if allowed_file(file.filename):  # checking for allowed file
             filename = secure_filename(file.filename)
@@ -90,7 +91,7 @@ def search_image():
             if not similar_images:
                 flash('No similar images found',
                       'warning')  # display warning if no similar images found
-                return redirect(request.url)
+                render_template('search.html', image_names=image_names, search_image=filename)
 
             if similar_images == 'No index':
                 flash('Faiss index not available, first create it by indexing images',
@@ -103,7 +104,7 @@ def search_image():
         else:
             flash('Allowed file types are : png, jpg, jpeg', 'error')  # displaying error message if file not allowed
             return redirect(request.url)
-    return render_template('search.html', image_names=image_names)
+    return render_template('search.html', image_names=image_names, search_image=filename)
 
 
 # function to load images one by one using filename from upload folder

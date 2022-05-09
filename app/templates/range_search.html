@@ -43,22 +43,19 @@
             {% endif %}
         {% endwith %}
 
-        {% if image_names %}
-            <div class="row gallery" style="padding-left:0px; padding-right:0px;" id="main_gallery">
-                <p style="font-size:1.2em">Similar Images: </p>
-                {% for image in image_names %}
-                    <div class="col-sm-6 col-md-4 col-lg-2">
-                        <div class="thumbnail">
-                            <a href="{{ url_for('main_app.send_image', filename=image) }}">
-                                <img class="diplay_image" src="{{ url_for('main_app.send_image', filename=image) }}"
-                                     style="padding:5px;" height="270" width="250" alt="Failed to load image">
-                            </a>
-                        </div>
+        <div class="row gallery" style="padding-left:0px; padding-right:0px;" id="main_gallery">
+            <p style="font-size:1.2em; margin-bottom:0px">Similar Images: </p>
+            {% for image in image_names %}
+                <div class="col-sm-6 col-md-4 col-lg-2">
+                    <div class="thumbnail">
+                        <a href="{{ url_for('main_app.send_image', filename=image) }}">
+                            <img class="diplay_image" src="{{ url_for('main_app.send_image', filename=image) }}"
+                                 style="padding:5px; object-fit:cover;" height="270" width="250" alt="Failed to load image">
+                        </a>
                     </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-
+                </div>
+            {% endfor %}
+        </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
     <script>
