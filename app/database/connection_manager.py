@@ -6,14 +6,16 @@ from app.config import CONFIG
 
 
 # class for database connection activities
-class DatabaseConnection(MonoState):
-    
+class DatabaseConnection:
+    def __init__(self):
+        self.config = read_properties_file(os.path.join(APP_ROOT, "environment.properties"))
+        self.config_name = os.getenv('APPLICATION_ENVIRONMENT', self.config['environment'])
+        self.config_environment = load_config(CONFIG[self.config_name])
+
     def connect(self):
-        config = read_properties_file(os.path.join(APP_ROOT, "environment.properties"))
-        config_name = os.getenv('APPLICATION_ENVIRONMENT', config['environment'])
-        config_environment = load_config(CONFIG[config_name])
-        es = Elasticsearch(config_environment.HOST,
-                           basic_auth=(config_environment.USERNAME, config_environment.PASSWORD), verify_certs=False)
+        es = Elasticsearch(self.config_environment.HOST,
+                           basic_auth=(self.config_environment.USERNAME, self.config_environment.PASSWORD),
+                           verify_certs=False)
         return es
 
     def close(self, es):

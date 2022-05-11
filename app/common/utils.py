@@ -101,4 +101,15 @@ class MonoState(object):
         obj.__dict__ = cls._internal_state
         return obj
 
+def get_logger():
+    logger = logging.getLogger('gunicorn.error')
+    # logger = logging.getLogger('Veronica')
+    logging.basicConfig(level=logging.INFO, format='[Time: %(asctime)s] - '
+                                                   '[Logger: %(name)s] - '
+                                                   '[Level: %(levelname)s] - '
+                                                   '[Module: %(pathname)s] - '
+                                                   '[Function: %(funcName)s] - '
+                                                   '%(message)s')
+    # logger.addFilter(PackagePathFilter())
+    return logger
 

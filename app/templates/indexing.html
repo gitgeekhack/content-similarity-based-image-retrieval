@@ -9,7 +9,7 @@
 {% block heading %}
     <div class="display-6 newnav" style="height:1.4em;">
         <a style="margin-left:2%">Upload Images to Index</a>
-        <a href="{{ url_for('main_app.homepage') }}" style="float:right; margin-right:2%"><button class="btn btn-outline-light">Home</button></a>
+        <a style="float:right; margin-right:2%" href="{{ url('home') }}"><button class="btn btn-outline-light">Home</button></a>
     </div>
 {% endblock %}
 
@@ -19,24 +19,8 @@
         <br>
         <p style="font-size:1.5em;">Select images</p>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    {% if category=='error' %}
-                        <p class="alert alert-danger">{{ message }}</p>
-                    {% endif %}
-                    {% if category=='info' %}
-                        <p class="alert alert-success">{{ message }}</p>
-                    {% endif %}
-                    {% if category=='warning' %}
-                        <p class="alert alert-warning">{{ message }}</p>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
         <form method="post" action="/index" enctype="multipart/form-data" id="form_loading">
-            <input type="file" name="files[]" multiple="true" autocomplete="off" required>
+            <input type="file" name="files" multiple="true" autocomplete="off" required>
             <input type="submit" class="btn btn-dark" value="Upload" />
         </form>
     </div>

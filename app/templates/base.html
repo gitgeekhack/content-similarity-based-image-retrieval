@@ -60,7 +60,7 @@
     {% block heading %}{% endblock %}
 
     <div class="temp">
-        <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading...">
+        <img src="{{ static('loading.gif') }}" alt="Loading...">
     </div>
 
     {% block data %}{% endblock %}

@@ -1,4 +1,3 @@
-# importing required libraries
 import os
 
 DIMENSION = 1792

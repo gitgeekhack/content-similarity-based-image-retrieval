@@ -3,14 +3,17 @@ import numpy as np
 from app.common.utils import MonoState
 import tensorflow_hub as hub
 
-module_handle = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/4"
-module = hub.load(module_handle)
+
+def load_module():
+    module_handle = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/4"
+    return hub.load(module_handle)
 
 
 class FeatureExtraction(MonoState):
+    _internal_state = {"module": load_module()}
 
     # function for reading image from storage
-    def load_img(self, image_path):
+    def load_image(self, image_path):
         img = tf.io.read_file(image_path)  # reading image
 
         # Decodes the image to W x H x 3 shape tensor with type of uint8
@@ -30,8 +33,8 @@ class FeatureExtraction(MonoState):
     def getvectors(self, filenames):
         vectors = []
         for filename in filenames:
-            img = self.load_img(filename)
-            features = module(img)
+            img = self.load_image(filename)
+            features = self.module(img)
             feature_vector = np.squeeze(features)
             vectors.append(feature_vector)
         return vectors

@@ -1,4 +1,5 @@
 from app import app
+from aiohttp import web
 
 if __name__ == "__main__":
-    app.run('0.0.0.0')
+    web.run_app(app)

@@ -20,7 +20,7 @@ class DatabaseHelper:
         # list to store not present vectors and its respective ids
         not_present, ids = [], []
 
-        for j, vector in enumerate(vectors):
+        for index, vector in enumerate(vectors):
             str1 = '{"query": {"bool": {"must": ['
             for i in vector:
                 str1 += '{{"match": {{"vector": {id} }}}},'.format(id=i)
@@ -34,10 +34,10 @@ class DatabaseHelper:
             if response['hits']['max_score']:
                 if int(response['hits']['max_score']) != 1792:
                     not_present.append(vector)
-                    ids.append(j)
+                    ids.append(index)
             else:
                 not_present.append(vector)
-                ids.append(j)
+                ids.append(index)
 
         self.db_connector.close(es)
 
@@ -63,7 +63,7 @@ class DatabaseHelper:
 
         return imagenames
 
-    def store_not_indexed(self, files, vectors, ids):
+    def store_vectors(self, files, vectors, ids):
         """
         store vectors to database
         Parameters:
