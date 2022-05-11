@@ -8,7 +8,6 @@ from app.constant import ALLOWED_EXTENSIONS
 INSTANCE_LOG_FOLDER_PATH = os.path.abspath(os.path.join(__file__, '..', '..', '..', 'logs'))
 
 
-# function to check is file valid or not
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 

@@ -4,6 +4,7 @@ import os
 DIMENSION = 1792
 NO_OF_NEIGHBORS = 5
 DISTANCE_THRESHOLD = 0.85
+MAXIMUM_UPLOAD = 100
 
 
 SECRET_KEY = 'asdklxjcnasdfsdfsjdkf'  # secret key for flask app

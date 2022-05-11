@@ -6,7 +6,7 @@ from flask import Flask
 from app.common.utils import setup_logger, read_properties_file
 from app.config import CONFIG
 from app.constant import UPLOAD_FOLDER, SAVED_INDEX_FOLDER, SECRET_KEY, APP_ROOT
-from app.database.db_connection_manager import DatabaseConnection
+from app.database.connection_manager import DatabaseConnection
 
 
 # object for database activities

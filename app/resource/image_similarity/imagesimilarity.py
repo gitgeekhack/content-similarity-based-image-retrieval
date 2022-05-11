@@ -1,4 +1,3 @@
-# importing required libraries
 import os
 from flask import Blueprint
 from flask import flash, request, redirect, render_template, send_from_directory
@@ -7,18 +6,18 @@ from app.common.utils import allowed_file
 from app.constant import UPLOAD_FOLDER, MAXIMUM_UPLOAD
 from app.service.search_and_index_images import ImageIndexer, ImageSearcher
 
-flask_main_app = Blueprint('main_app', __name__)  # creating Blueprint for flask app
+imgsimilarity_app = Blueprint('imgsimilarity', __name__)  # creating Blueprint for flask app
 
 file = None
 
 # rendering index.html on homepage of app
-@flask_main_app.route('/')
+@imgsimilarity_app.route('/')
 def homepage():
     return render_template('index.html')
 
 
 # rendering indexing.html for uploading images
-@flask_main_app.route('/index')
+@imgsimilarity_app.route('/index')
 def upload_form():
     return render_template('indexing.html')
 
@@ -29,7 +28,7 @@ obj_imagesearcher = ImageSearcher()
 
 
 # uploading and indexing image
-@flask_main_app.route('/index', methods=['POST'])
+@imgsimilarity_app.route('/index', methods=['POST'])
 def index_images():
     if 'files[]' not in request.files:
         return redirect(request.url)
@@ -72,7 +71,7 @@ def index_images():
 
 
 # function for searching image
-@flask_main_app.route('/search', methods=["POST", "GET"])
+@imgsimilarity_app.route('/search', methods=["POST", "GET"])
 def search_image():
     global file
     file = request.files.get('input_image')
@@ -108,13 +107,13 @@ def search_image():
 
 
 # function to load images one by one using filename from upload folder
-@flask_main_app.route('/search/<filename>')
+@imgsimilarity_app.route('/search/<filename>')
 def send_image(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 
 # function for searching similar images based on distance threshold
-@flask_main_app.route('/load_more')
+@imgsimilarity_app.route('/load_more')
 def search_multiple():
     global file
 

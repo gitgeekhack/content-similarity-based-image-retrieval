@@ -2,7 +2,7 @@
 import faiss
 import app
 from app.service.helper.generate_feature_vectors import FeatureExtraction
-from app.database.db_helper import vector_already_present, store_not_indexed
+from app.database.helper import DatabaseHelper
 from app.constant import SAVED_INDEX_FOLDER, DIMENSION
 import numpy as np
 
@@ -15,11 +15,12 @@ except Exception as e:
     app.logger.info("Creating Faiss index")
     faiss_index = faiss.IndexFlatIP(DIMENSION)
 
+db=DatabaseHelper()
 
 def indexing(files):
     all_vectors = vector_obj.getvectors(files)  # generating all vectors
 
-    not_present_vectors, ids = vector_already_present(all_vectors)  # finding vectors which is not present in index
+    not_present_vectors, ids = db.vector_already_present(all_vectors)  # finding vectors which is not present in index
 
     if not_present_vectors:
         numpy_vectors = np.array(not_present_vectors, dtype='float32')  # converting vector to 'float32' datatype
@@ -30,7 +31,7 @@ def indexing(files):
         faiss_index.add(numpy_vectors)  # adding vectors to faiss index
         faiss.write_index(faiss_index, SAVED_INDEX_FOLDER+'/file.index')  # saving faiss index to storage
 
-        store_not_indexed(files, all_vectors, ids)  # storing vectors to database
+        db.store_not_indexed(files, all_vectors, ids)  # storing vectors to database
 
     return len(not_present_vectors)
 
