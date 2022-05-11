@@ -21,21 +21,15 @@ class Searcher:
             app.logger.warning("Error in loading index", e)
             return
 
-    def searching(self, file_path, range_search):
+    def searching(self, file_path):
         vector = self.vector_generator.getvectors(file_path)  # generating vector
         numpy_vector = np.array(vector, dtype='float32')
         faiss.normalize_L2(numpy_vector)  # normalizing vectors
-        if range_search:  # to search with distance threshold
-            _, distances, indexes = self.faiss_index.range_search(numpy_vector, DISTANCE_THRESHOLD)
 
-            # sorting indexes by distance
-            similar_indexes = [indexes[list(distances).index(i)] for i in sorted(distances, reverse=True)]
-        else:  # to search with no. of neighbors
-            distances, indexes = self.faiss_index.search(numpy_vector, NO_OF_NEIGHBORS)
+        _, distances, indexes = self.faiss_index.range_search(numpy_vector, DISTANCE_THRESHOLD)
 
-            # filtering images by threshold
-            similar_indexes = [indexes[0][i] \
-                               for i, distance in enumerate(distances[0]) if distance >= DISTANCE_THRESHOLD]
+        # sorting indexes by distance
+        similar_indexes = [indexes[list(distances).index(i)] for i in sorted(distances, reverse=True)]
 
         self.indexer.indexing(file_path)  # adding search image to faiss index
 

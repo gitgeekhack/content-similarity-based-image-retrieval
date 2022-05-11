@@ -18,6 +18,10 @@
         border-radius: 0;
         position: relative;
         }
+
+        .hidden_images{
+            display: none;
+        }
     </style>
 {% endblock %}
 
@@ -57,27 +61,54 @@
         <div class="row gallery" style="padding-left:0px; padding-right:0px;" id="main_gallery">
             {% if image_names %}
                 <p style="font-size:1.2em">Similar Images: </p>
-                {% for image in image_names %}
-                    <div class="col-sm-6 col-md-4 col-lg-2">
-                        <div class="thumbnail">
-                            <a href="{{ static('Uploaded_images/'+image) }}">
-                                <img class="diplay_image" src="{{ static('Uploaded_images/'+image) }}"
-                                     style="padding:5px; object-fit:cover;" height="270" width="250" alt="Failed to load image">
-                            </a>
+                {% if image_names|length <= neighbors %}
+                    {% for image in image_names %}
+                        <div class="col-sm-6 col-md-4 col-lg-2">
+                            <div class="thumbnail">
+                                <a href="{{ static('Uploaded_images/'+image) }}">
+                                    <img class="diplay_image" src="{{ static('Uploaded_images/'+image) }}"
+                                         style="padding:5px; object-fit:cover;" height="270" width="250" alt="Failed to load image">
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-                {% if image_names|length == 5 %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if image_names|length > neighbors %}
+                    {% for image in image_names[:neighbors] %}
+                        <div class="col-sm-6 col-md-4 col-lg-2">
+                            <div class="thumbnail">
+                                <a href="{{ static('Uploaded_images/'+image) }}">
+                                    <img class="diplay_image" src="{{ static('Uploaded_images/'+image) }}"
+                                         style="padding:5px; object-fit:cover;" height="270" width="250" alt="Failed to load image">
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    {% for image in image_names[neighbors:] %}
+
+                        <div class="col-sm-6 col-md-4 col-lg-2 hidden_images">
+                            <div class="thumbnail">
+                                <a href="{{ static('Uploaded_images/'+image) }}">
+                                    <img class="diplay_image" src="{{ static('Uploaded_images/'+image) }}"
+                                         style="padding:5px; object-fit:cover;" height="270" width="250" alt="Failed to load image">
+                                </a>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+
                     <div class="col-sm-6 col-md-4 col-lg-2">
                         <div class="thumbnail">
                             <button type="button" class="btn btn-outline-dark" onclick="load_page()"
-                                    style="padding:5px; height:270px; width:100%; text-align:center;">Load More</button>
+                                    style="padding:5px; height:270px; width:100%; text-align:center;" id="load_button">Load More</button>
                         </div>
                     </div>
                 {% endif %}
+
             {% endif %}
         </div>
-        <div id="page_holder"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
@@ -88,10 +119,12 @@
 
         function load_page()
         {
-             $("#main_gallery").remove();
-             $.get("load_more",function(data){
-                   $("#page_holder").html(data);
-             });
+             document.getElementById("load_button").style.display = "none";
+             const items = document.getElementsByClassName("hidden_images");
+             for (const slide of items) {
+                  slide.style.display = "initial";
+                }
+
         }
     </script>
 {% endblock %}
