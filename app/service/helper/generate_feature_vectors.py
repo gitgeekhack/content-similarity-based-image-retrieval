@@ -2,35 +2,44 @@ import tensorflow as tf
 import numpy as np
 from app.common.utils import MonoState
 import tensorflow_hub as hub
+from app.constant import MOBILENET_V2_URL
 
 
 def load_module():
-    module_handle = "https://tfhub.dev/google/imagenet/mobilenet_v2_140_224/feature_vector/4"
+    module_handle = MOBILENET_V2_URL
     return hub.load(module_handle)
 
 
 class FeatureExtraction(MonoState):
     _internal_state = {"module": load_module()}
 
-    # function for reading image from storage
     def load_image(self, image_path):
-        img = tf.io.read_file(image_path)  # reading image
+        """
+        function for loading single image and applying preprocessing
+        Parameters:
+            image_path <string>: path of an image to load
+        Returns:
+            img <Tensor>: image tensor of shape [1, 224, 224, 3]
+        """
+        img = tf.io.read_file(image_path)
 
-        # Decodes the image to W x H x 3 shape tensor with type of uint8
         img = tf.io.decode_jpeg(img, channels=3)
 
-        # Resize the image to 224 x 244 x 3 shape tensor
         img = tf.image.resize_with_pad(img, 224, 224)
 
-        # Converts the data type of uint8 to float32 by adding a new axis
-        # This makes the img 1 x 224 x 224 x 3 tensor with the data type of float32
-        # This is required for the mobilenet model we are using
+        # Resizing image to input dimension required for "mobilenetv2" model
         img = tf.image.convert_image_dtype(img, tf.float32)[tf.newaxis, ...]
 
         return img
 
-    # function for generating vectors
     def getvectors(self, filenames):
+        """
+        function for generating feature vectors of given files
+        Parameters:
+            filenames <list>: list of filepaths
+        Returns:
+            vectors <list>: list of vectors generated
+        """
         vectors = []
         for filename in filenames:
             img = self.load_image(filename)

@@ -82,5 +82,6 @@ class DatabaseHelper:
             }
             es.index(index="vector_mapping", document=doc, id=total_indexed+ids.index(id))
 
-        self.db_connector.close(es)  # closing database connection
+        self.db_connector.close(es)
+
 

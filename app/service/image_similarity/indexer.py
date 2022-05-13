@@ -13,7 +13,7 @@ class Indexer:
 
         try:
             self.faiss_index = faiss.read_index(SAVED_INDEX_FOLDER + '/file.index')
-        except Exception as e:
+        except Exception:
             app.logger.info("Creating Faiss index")
             self.faiss_index = faiss.IndexFlatIP(DIMENSION)
 

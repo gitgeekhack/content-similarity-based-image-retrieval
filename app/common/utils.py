@@ -103,7 +103,6 @@ class MonoState(object):
 
 def get_logger():
     logger = logging.getLogger('gunicorn.error')
-    # logger = logging.getLogger('Veronica')
     logging.basicConfig(level=logging.INFO, format='[Time: %(asctime)s] - '
                                                    '[Logger: %(name)s] - '
                                                    '[Level: %(levelname)s] - '
