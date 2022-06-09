@@ -1,5 +1,5 @@
 import logging
-import os
+import os, sys
 from configparser import ConfigParser
 from io import StringIO
 from logging.handlers import TimedRotatingFileHandler
@@ -8,13 +8,6 @@ from app.constant import ALLOWED_EXTENSIONS
 INSTANCE_LOG_FOLDER_PATH = os.path.abspath(os.path.join(__file__, '..', '..', '..', 'logs'))
 
 
-# function to convert string object name to numeric id
-def object_to_key_map(es, object):
-    response = es.search(index="object_id_mapping", body={"query": {"match": {"obj_name": object}}})
-    return response['hits']['hits'][0]['_id']
-
-
-# function to check is file valid or not
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -62,6 +55,7 @@ def setup_logger():
     logger.addHandler(handler)
     return logger
 
+
 def make_dir(directory_path):
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
@@ -80,4 +74,41 @@ class LogFormatter(logging.Formatter):
                                          record.levelname, location_line,
                                          record.getMessage())
         return s
+
+
+def load_config(import_name):
+    import_name = str(import_name).replace(":", ".")
+    try:
+        __import__(import_name)
+    except ImportError:
+        if "." not in import_name:
+            raise
+    else:
+        return sys.modules[import_name]
+
+    module_name, obj_name = import_name.rsplit(".", 1)
+    module = __import__(module_name, globals(), locals(), [obj_name])
+    try:
+        return getattr(module, obj_name)
+    except AttributeError as e:
+        raise ImportError(e)
+
+
+class MonoState(object):
+    _internal_state = {}
+    def __new__(cls, *args, **kwargs):
+        obj = super(MonoState, cls).__new__(cls)
+        obj.__dict__ = cls._internal_state
+        return obj
+
+def get_logger():
+    logger = logging.getLogger('gunicorn.error')
+    logging.basicConfig(level=logging.INFO, format='[Time: %(asctime)s] - '
+                                                   '[Logger: %(name)s] - '
+                                                   '[Level: %(levelname)s] - '
+                                                   '[Module: %(pathname)s] - '
+                                                   '[Function: %(funcName)s] - '
+                                                   '%(message)s')
+    # logger.addFilter(PackagePathFilter())
+    return logger
 

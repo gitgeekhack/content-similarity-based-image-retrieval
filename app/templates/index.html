@@ -1,21 +1,27 @@
 {% extends 'base.html' %}
 
+
 {% block title %}
-    <title>Home Page</title>
+    <title>Image Similarity Using Faiss</title>
 {% endblock %}
 
-{% block h1 %}
-    <center><h1 class="display-5">Content Based Image Retrieval</h1></center>
+
+{% block heading %}
+    <div class="display-6 newnav" >
+        <div style="width: 100%; text-align:center;"><a style="font-size:1.3em;">Image Similarity Detection</a></div>
+    </div>
 {% endblock %}
 
 
 {% block data %}
-    <center><h3>Here you can search images based on content of input image</h3></center>
     <br>
-    <center>
+    <h3 style="text-align:center;">Here you can search images similar to input image</h3>
+    <br>
+
+    <div style="width: 100%; text-align:center;">
         <div class="d-grid gap-5 d-md-block">
-            <a class="btn btn-outline-dark" href="/upload" role="button" methods="post">Upload</a>
-            <a class="btn btn-outline-dark" href="/search" role="button" methods="get">Search</a>
+            <a class="btn btn-outline-dark" href="/index" role="button">Index</a>
+            <a class="btn btn-outline-dark" href="/search" role="button">Search</a>
         </div>
-    </center>
+    </div>
 {% endblock %}

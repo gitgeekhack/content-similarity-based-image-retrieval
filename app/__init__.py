@@ -1,20 +1,9 @@
-# importing required libraries
-from flask import jsonify, make_response
 from app.manage import create_app
+from app.resource.image_similarity.imagesimilarity import HomePage, Index, Search
 
-app, logger = create_app(debug=True)  # creating flask app using function
+app, logger = create_app()
 
-# importing Blueprint flask apps
-from app.resource.common import common_app
-from app.resource.flask_main import flask_main_app
+app.router.add_view('/', HomePage, name="home")
+app.router.add_view('/index', Index, name="index")
+app.router.add_view('/search', Search, name="search")
 
-# registering Blueprint flask apps
-app.register_blueprint(common_app)
-app.register_blueprint(flask_main_app)
-
-
-# function for error handling
-@app.errorhandler(404)
-def page_not_found(e):
-    """Default 404 handler"""
-    return make_response(jsonify(ErrorMessage="Not found"), 404)
